@@ -1,0 +1,8 @@
+Flask
+python-dotenv
+bcrypt
+google-generativeai
+Pillow
+pandas
+thefuzz
+python-Levenshtein

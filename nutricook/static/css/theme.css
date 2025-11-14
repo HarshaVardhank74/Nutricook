@@ -1,0 +1,336 @@
+/* static/css/theme.css */
+
+/* --- General Body and Typography --- */
+body {
+    font-family: 'Nunito', sans-serif; /* New primary font */
+    background-color: #FAF8F1; /* Warm beige background */
+    color: #333333; /* Dark grey text */
+    line-height: 1.7; /* Slightly more spacing */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lato', sans-serif; /* Distinct heading font */
+    color: #38761d; /* Darker green for main headings */
+    margin-bottom: 1.2rem;
+}
+
+h2 {
+    color: #609966; /* Primary green for section titles */
+    border-bottom: 2px solid #D4EAC8; /* Light green underline */
+    padding-bottom: 0.5rem;
+    display: inline-block; /* Makes underline fit content */
+}
+
+h3 {
+   color: #333333; /* Keep H3 less prominent */
+   font-weight: 600;
+}
+
+a {
+    color: #609966; /* Primary green for links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #E67E22; /* Accent orange on hover */
+    text-decoration: underline;
+}
+
+/* --- Navigation Bar --- */
+.navbar {
+    background: #38761d; /* Dark green background */
+    border-bottom: 4px solid #E67E22; /* Accent orange border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 0.8rem 0; /* Slightly adjust padding */
+}
+
+.navbar-brand {
+    font-weight: 700; /* Bolder brand */
+    font-size: 1.8rem;
+}
+
+.navbar-nav a {
+    font-weight: 600;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 2px solid transparent; /* Prepare for hover effect */
+    transition: all 0.3s ease;
+}
+
+.navbar-nav a:hover {
+    color: #ffffff;
+    border-bottom-color: #E67E22; /* Orange underline on hover */
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle background hover */
+    text-decoration: none;
+}
+
+/* --- Buttons --- */
+.btn {
+    border-radius: 25px; /* Rounded buttons */
+    padding: 0.8rem 1.8rem;
+    font-weight: 700;
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+     transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.btn-primary {
+    background-color: #609966; /* Primary green */
+    color: #ffffff;
+}
+.btn-primary:hover {
+    background-color: #4d8050; /* Darker green */
+    color: #ffffff;
+}
+
+.btn-secondary {
+    background-color: #E67E22; /* Accent orange */
+    color: #ffffff;
+}
+.btn-secondary:hover {
+    background-color: #d35400; /* Darker orange */
+    color: #ffffff;
+}
+
+/* Specific Button: Voice Input */
+#voiceBtn {
+    border-radius: 50%; /* Make it round */
+    padding: 0.6rem 0.7rem; /* Adjust padding for roundness */
+    line-height: 1; /* Center icon better */
+    font-size: 1.1rem;
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid #ccc;
+    box-shadow: none; /* Remove default btn shadow */
+    margin-left: 5px;
+}
+#voiceBtn:hover {
+     background-color: #e0e0e0;
+     transform: none; /* Disable lift for this one */
+     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+ #voiceBtn.listening {
+    background-color: #dc3545; /* Keep red for listening */
+    color: white;
+    border-color: #dc3545;
+}
+
+
+/* --- Forms --- */
+.form-group label {
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 0.6rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="file"],
+.form-group textarea {
+    border: 1px solid #E0E0E0; /* Lighter border */
+    border-radius: 8px; /* More rounded corners */
+    padding: 0.9rem 1rem; /* Increase padding */
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="file"] {
+    padding: 0.6rem 1rem; /* Adjust file input padding */
+}
+
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #609966; /* Primary green border on focus */
+    box-shadow: 0 0 0 3px rgba(96, 153, 102, 0.2); /* Subtle glow on focus */
+}
+
+/* --- Containers & Boxes --- */
+.container {
+    max-width: 1200px; /* Slightly wider container */
+}
+
+.hero {
+    background-color: #E8F5E9; /* Very light green */
+    padding: 4rem 2rem;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.hero h1 {
+    color: #38761d; /* Dark green */
+    font-size: 3rem;
+}
+.hero p {
+    font-size: 1.15rem;
+    color: #444;
+    max-width: 700px; /* Limit text width */
+    margin: 1rem auto;
+}
+.hero .btn {
+    margin-top: 1rem;
+}
+
+.features {
+    padding: 2rem 0;
+}
+
+.feature-item,
+.result-box,
+.suggestions-box,
+.history-box {
+    background: #ffffff; /* White background for boxes */
+    padding: 2rem;
+    border-radius: 10px;
+    border: 1px solid #E0E0E0; /* Light border */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    margin-bottom: 1.5rem; /* Ensure spacing */
+    transition: box-shadow 0.3s ease;
+}
+
+.feature-item:hover,
+.result-box:hover,
+.suggestions-box:hover,
+.history-box:hover {
+     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+
+.feature-item h3 {
+   color: #609966; /* Primary green for feature titles */
+   margin-top: 0;
+}
+
+.result-box h3,
+.suggestions-box h2,
+.history-box h2 {
+    margin-top: 0;
+    border: none; /* Remove default h2 border inside boxes */
+    padding-bottom: 0;
+    display: block; /* Ensure it takes full width */
+}
+
+.result-box pre,
+.suggestions-box pre {
+    background-color: #f8f9fa; /* Slightly off-white for pre blocks */
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 1rem;
+    font-size: 0.95rem;
+    color: #212529;
+}
+
+/* --- Dashboard Specific --- */
+.hero.logged-in-hero {
+    background-color: #D4EAC8; /* Light green */
+    text-align: left;
+}
+.hero.logged-in-hero h1 { color: #38761d; font-size: 2.5rem;}
+.hero.logged-in-hero p { margin: 0.5rem 0; max-width: none; color: #333;}
+.hero.logged-in-hero strong { color: #E67E22; font-size: 1.1em;}
+
+.history-list li {
+    border-color: #f0f0f0; /* Lighter separator */
+    padding: 1rem 0;
+}
+ .history-list li strong {
+     color: #38761d;
+ }
+
+.score-badge {
+     font-weight: 600;
+     padding: 0.3rem 0.7rem;
+     font-size: 0.85rem;
+}
+
+/* --- Recipe Recommender Carousel --- */
+.recipe-carousel {
+    box-shadow: none; /* Remove double shadow */
+    border: 1px solid #D4EAC8; /* Green border */
+}
+.recipe-item h4 { /* Style recipe titles */
+    color: #38761d; /* Dark green */
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+.recipe-item strong {
+    color: #444;
+    font-weight: 600;
+}
+.recipe-item pre {
+    margin-bottom: 1.5rem; /* More space below code blocks */
+}
+.image-keywords {
+     color: #E67E22; /* Orange keywords */
+     font-weight: 600;
+}
+.recipe-navigation button {
+     background: #f0f0f0;
+     border: 1px solid #ccc;
+     color: #555;
+     border-radius: 5px;
+     padding: 0.5rem 1rem;
+     transition: background-color 0.3s ease;
+}
+ .recipe-navigation button:hover:not(:disabled) {
+     background-color: #e0e0e0;
+}
+ .recipe-navigation button:disabled {
+     opacity: 0.5;
+     cursor: not-allowed;
+}
+ #recipeCounter {
+     display: inline-block;
+     margin: 0 1rem;
+     font-weight: 600;
+ }
+
+/* --- Footer --- */
+footer {
+    background: #e9ecef; /* Light grey */
+    color: #555;
+    padding: 1.5rem 0;
+    border-top: 1px solid #dee2e6;
+    font-size: 0.9rem;
+}
+/* Add this to your static/css/theme.css file */
+
+/* ... (keep all existing theme styles) ... */
+
+/* Styles for Recommender YouTube Link */
+.youtube-link-area {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+}
+.youtube-link-area a {
+     display: inline-block;
+     padding: 0.6rem 1.2rem;
+     background-color: #FF0000; /* YouTube Red */
+     color: white !important; /* Override theme link color */
+     text-decoration: none;
+     border-radius: 5px;
+     font-weight: 600;
+     transition: background-color 0.3s ease;
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional shadow */
+}
+ .youtube-link-area a:hover {
+     background-color: #cc0000; /* Darker Red */
+     text-decoration: none;
+     box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+     transform: translateY(-1px);
+ }
+
+ /* Remove Image Keywords specific styling if you added any previously */
+ /* .image-keywords { ... } */

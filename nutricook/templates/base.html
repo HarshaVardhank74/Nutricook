@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NutriCook{% endblock %}</title>
+     {# Add Google Fonts Link #}
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+     {# Existing CSS Link #}
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+     {# Link the NEW Theme CSS - place it AFTER style.css #}
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">NutriCook</a>
+            <ul class="navbar-nav">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                {% if 'user_id' in session %}
+                    <li><a href="{{ url_for('recommender') }}">Recommender</a></li>
+                    <li><a href="{{ url_for('generator') }}">Generator</a></li>
+                    <li><a href="{{ url_for('checker') }}">Meal Checker</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout ({{ session['username'] }})</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                     <li><a href="{{ url_for('about') }}">About</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container page-content">
+        {# Display flashed messages #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {# Page-specific content goes here #}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="container">
+            © 2025 NutriCook.
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

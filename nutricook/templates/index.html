@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to NutriCook{% endblock %}
+
+{% block content %}
+    {% if current_user %}
+        {# --- Logged-In View --- #}
+        <header class="hero logged-in-hero">
+            <h1>Welcome back, {{ current_user.username }}!</h1>
+            <p>Your current Health Score: <strong>{{ current_user.total_health_score }}</strong></p>
+            <p>Use the navigation above to explore features, or see suggestions and history below.</p>
+        </header>
+
+        <section class="user-dashboard">
+            {# Suggestions Based on History #}
+            {% if suggestions %}
+            <div class="suggestions-box">
+                <h2>Meal Suggestions For You</h2>
+                {% if "Could not load suggestions" in suggestions or "Check some meals" in suggestions %}
+                    <p>{{ suggestions }}</p>
+                {% else %}
+                     {# Display suggestions from Gemini - assuming simple list format #}
+                    <pre>{{ suggestions }}</pre> {# Using <pre> to preserve formatting from Gemini #}
+                {% endif %}
+            </div>
+            {% endif %}
+
+             {# Recent Meal Check History #}
+            {% if recent_checks %}
+            <div class="history-box">
+                <h2>Your Recent Meal Checks</h2>
+                <ul class="history-list">
+                    {% for check in recent_checks %}
+                        <li>
+                            <strong>{{ check.meal_name }}</strong> ({{ check.checked_at.strftime('%Y-%m-%d %H:%M') }})
+                            <br>
+                            {# Truncate assessment text to keep it brief #}
+                            <small>Assessment: {{ check.health_assessment | truncate(100) }}</small>
+                            <span class="score-badge {% if check.assigned_score > 0 %}score-positive{% elif check.assigned_score < 0 %}score-negative{% else %}score-neutral{% endif %}">
+                                Score: {{ check.assigned_score }}
+                            </span>
+                        </li>
+                    {% else %}
+                        <li>No meals checked recently. Use the Meal Checker!</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+        </section>
+
+    {% else %}
+        {# --- Logged-Out View (Original Content from previous state) --- #}
+        <header class="hero">
+            <h1>Welcome to NutriCook!</h1>
+            <p>Your intelligent partner for personalized nutrition and meal planning.</p>
+            <p>Get recipe recommendations based on your needs, generate new meal ideas, or analyze your meals instantly.</p>
+            <a href="{{ url_for('signup') }}" class="btn btn-primary">Get Started</a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+        </header>
+
+        <section class="features">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                 {# Feature descriptions for logged-out users #}
+                <div class="feature-item">
+                    <h3>Recipe Recommender</h3>
+                    <p>Find recipes matching your specific nutritional targets (protein, fat, carbs, fiber) and ingredient preferences.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Recipe Generator</h3>
+                    <p>Describe the meal you want (e.g., "spicy vegan dinner") and get creative recipe ideas.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>AI Meal Checker & Scoring</h3>
+                    <p>Upload a photo of your meal to identify it, estimate nutrition, check suitability based on your profile, and track your health score.</p>
+                </div>
+                 <div class="feature-item">
+                    <h3>Personalized Profiles & Suggestions</h3>
+                    <p>Store info securely, receive tailored advice, and get meal suggestions on your homepage based on your history.</p>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

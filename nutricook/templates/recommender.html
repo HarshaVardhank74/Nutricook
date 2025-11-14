@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block title %}Recipe Recommender - NutriCook{% endblock %}
+{% block head %}
+{# Styles for the carousel (Keep from previous step) #}
+<style>
+.recipe-carousel {
+position: relative;
+margin-top: 2rem;
+padding: 1.5rem;
+background-color: #fff;
+border: 1px solid #ddd;
+border-radius: 5px;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+overflow: hidden; /* Hide non-active recipes /
+}
+/ Add styles for the youtube link area /
+.youtube-link-area {
+margin-top: 1rem;
+margin-bottom: 1rem;
+padding: 0.5rem 0;
+}
+.youtube-link-area a {
+display: inline-block;
+padding: 0.6rem 1.2rem;
+background-color: #FF0000; / YouTube Red /
+color: white !important; / Override theme link color /
+text-decoration: none;
+border-radius: 5px;
+font-weight: 600;
+transition: background-color 0.3s ease;
+}
+.youtube-link-area a:hover {
+background-color: #cc0000; / Darker Red */
+text-decoration: none;
+}
+     /* Keep other existing styles */
+     .recipe-item { display: none; }
+     .recipe-item.active { display: block; }
+     .recipe-navigation { text-align: center; margin-top: 1rem; }
+     .recipe-navigation button { padding: 0.5rem 1rem; margin: 0 0.5rem; cursor: pointer; }
+     .recipe-item h4 { color: #0779e4; margin-bottom: 0.8rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+     .recipe-item strong { display: inline-block; min-width: 130px; margin-bottom: 0.3rem; }
+     .recipe-item pre { white-space: pre-wrap; word-wrap: break-word; background-color: #f9f9f9; padding: 0.8rem; border-radius: 4px; border: 1px solid #eee; font-family: monospace; font-size: 0.9rem; margin-top: 0.5rem; margin-bottom: 1rem; }
+     /* .image-keywords removed */
+</style>
+{% endblock %}
+{% block content %}
+<h2>Recipe Recommender</h2>
+<p>Enter your desired nutritional targets and preferences to get 3 recipe recommendations.</p>
+{# --- Keep the form as before --- #}
+<form method="POST" action="{{ url_for('recommender') }}">
+    {# ... (protein, fat, carbs, fiber, ingredients inputs) ... #}
+     <div class="form-group">
+        <label for="protein">Desired Protein (g, optional)</label>
+        <input type="number" id="protein" name="protein" step="any" min="0">
+    </div>
+     <div class="form-group">
+        <label for="fat">Desired Fat (g, optional)</label>
+        <input type="number" id="fat" name="fat" step="any" min="0">
+    </div>
+     <div class="form-group">
+        <label for="carbs">Desired Carbs (g, optional)</label>
+        <input type="number" id="carbs" name="carbs" step="any" min="0">
+    </div>
+     <div class="form-group">
+        <label for="fiber">Desired Fiber (g, optional)</label>
+        <input type="number" id="fiber" name="fiber" step="any" min="0">
+    </div>
+    <div class="form-group">
+        <label for="ingredients">Ingredients to Include/Exclude (Optional)</label>
+        <textarea id="ingredients" name="ingredients" rows="3" placeholder="e.g., include chicken, exclude nuts, low-sodium"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Get Recommendations</button>
+</form>
+
+{# --- Display Error Message if any --- #}
+{% if error_message %}
+    <div class="alert alert-danger">{{ error_message }}</div>
+{% endif %}
+
+{# --- Display Recommendations Carousel --- #}
+{% if recommendations %}
+<div class="recipe-carousel">
+    <h3>Recommendation Results:</h3>
+
+    {% for recipe in recommendations %}
+    {# Add 'active' class only to the first item #}
+    <div class="recipe-item {% if loop.first %}active{% endif %}" id="recipe-{{ loop.index }}">
+        <h4>{{ loop.index }}. {{ recipe.name | default('Unnamed Recipe') }}</h4>
+
+        {# --- REMOVE Image Keywords Section ---
+        {% if recipe.image_keywords %}
+            <p class="image-keywords">Image Idea: {{ recipe.image_keywords }}</p>
+        {% endif %}
+        --- END REMOVE --- #}
+
+        {# --- ADD YouTube Link Section --- #}
+        {% if recipe.youtube_search_url %}
+            <div class="youtube-link-area">
+                <a href="{{ recipe.youtube_search_url }}" target="_blank" rel="noopener noreferrer">
+                    ▶️ Find Recipe Videos on YouTube
+                </a>
+            </div>
+        {% endif %}
+        {# --- END ADD YouTube Link Section --- #}
+
+        {% if recipe.prep_time %}
+            <p><strong>Preparation Time:</strong> {{ recipe.prep_time }}</p>
+        {% endif %}
+        {% if recipe.taste %}
+            <p><strong>Taste Profile:</strong> {{ recipe.taste }}</p>
+        {% endif %}
+        {% if recipe.nutrition %}
+            <p><strong>Est. Nutrition:</strong> {{ recipe.nutrition }}</p>
+        {% endif %}
+
+         {% if recipe.ingredients %}
+            <p><strong>Ingredients:</strong></p>
+            <pre>{{ recipe.ingredients }}</pre>
+         {% endif %}
+
+         {% if recipe.instructions %}
+            <p><strong>Instructions:</strong></p>
+            <pre>{{ recipe.instructions }}</pre>
+         {% endif %}
+    </div>
+    {% else %}
+         <p>No recommendations generated or parsed correctly.</p>
+    {% endfor %}
+
+    {# --- Keep Navigation Buttons --- #}
+    {% if recommendations|length > 1 %}
+    <div class="recipe-navigation">
+        <button id="prevRecipe" onclick="changeRecipe(-1)">« Previous</button>
+        <span id="recipeCounter">1 / {{ recommendations|length }}</span>
+        <button id="nextRecipe" onclick="changeRecipe(1)">Next »</button>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{# --- Keep JavaScript for the carousel (no changes needed here) --- #}
+{% if recommendations and recommendations|length > 1 %}
+<script>
+let currentRecipeIndex = 0;
+const recipes = document.querySelectorAll('.recipe-item');
+const totalRecipes = recipes.length;
+const counterElement = document.getElementById('recipeCounter');
+function showRecipe(index) {
+        recipes.forEach((recipe, i) => {
+            recipe.classList.toggle('active', i === index);
+        });
+        if (counterElement) {
+             counterElement.textContent = `${index + 1} / ${totalRecipes}`;
+        }
+        document.getElementById('prevRecipe').disabled = (index === 0);
+        document.getElementById('nextRecipe').disabled = (index === totalRecipes - 1);
+    }
+
+    function changeRecipe(direction) {
+        const newIndex = currentRecipeIndex + direction;
+        if (newIndex >= 0 && newIndex < totalRecipes) {
+            currentRecipeIndex = newIndex;
+            showRecipe(currentRecipeIndex);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (totalRecipes > 0) {
+            showRecipe(0);
+        } else {
+            const nav = document.querySelector('.recipe-navigation');
+            if(nav) nav.style.display = 'none';
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

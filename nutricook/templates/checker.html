@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Meal Checker - NutriCook{% endblock %}
+
+{% block content %}
+    <h2>AI Meal Checker</h2>
+    <p>Upload an image of your meal. Our AI will try to identify it, estimate its nutritional content, and provide a basic health assessment based on your profile.</p>
+
+    <form method="POST" action="{{ url_for('checker') }}" enctype="multipart/form-data">
+         <div class="form-group">
+            <label for="meal_image">Upload Meal Image:</label>
+            <input type="file" id="meal_image" name="meal_image" accept="image/*" required>
+             <small>Allowed types: png, jpg, jpeg, gif, webp. Max size: 16MB</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Analyze Meal</button>
+    </form>
+
+    {% if analysis or image_filename %}
+    <div class="result-box">
+        <h3>Analysis Result:</h3>
+        {% if image_filename %}
+            <div class="uploaded-image">
+                <p><strong>Uploaded Image:</strong></p>
+                <img src="{{ url_for('uploaded_file', filename=image_filename) }}" alt="Uploaded Meal" style="max-width: 300px; height: auto; border: 1px solid #ccc;">
+             </div>
+         {% endif %}
+
+        {% if analysis %}
+            <div class="analysis-text">
+                 {# Use <pre> for preserving formatting from Gemini, or parse/style more nicely #}
+                <pre>{{ analysis }}</pre>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+{% endblock %}

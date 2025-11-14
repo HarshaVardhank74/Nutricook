@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipe Generator - NutriCook{% endblock %}
+
+{% block head %}
+    {# Optional: Add styling for voice button and NEW recipe display elements #}
+    <style>
+        #voiceBtn {
+            margin-left: 10px;
+            padding: 0.5rem 0.8rem;
+            cursor: pointer;
+        }
+        #voiceStatus {
+            display: inline-block;
+            margin-left: 15px;
+            font-style: italic;
+            color: #555;
+        }
+        #voiceBtn.listening {
+            background-color: #dc3545; /* Red when listening */
+            color: white;
+        }
+        /* Style for individual recipe blocks */
+        .recipe-block {
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+         .recipe-block:last-child {
+             border-bottom: none; /* Remove border from last item */
+         }
+         .recipe-block h4 { /* Style recipe titles */
+            margin-bottom: 0.5rem;
+            color: #0779e4; /* Use a theme color if desired */
+         }
+         .recipe-block strong { /* Slightly emphasize labels */
+             font-weight: 600;
+         }
+         .recipe-block p.description { /* Style for description */
+             margin-bottom: 1rem;
+             font-style: italic;
+             color: #555;
+         }
+         .recipe-block pre { /* Keep pre styling for details */
+             white-space: pre-wrap;
+             word-wrap: break-word;
+             background-color: #f9f9f9;
+             padding: 0.8rem;
+             border-radius: 4px;
+             border: 1px solid #eee;
+             font-family: monospace;
+             font-size: 0.9rem;
+             margin-top: 0.5rem;
+             margin-bottom: 1rem;
+         }
+        /* Styles for YouTube link */
+        .youtube-link-area {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .youtube-link-area a {
+             display: inline-block;
+             padding: 0.4rem 0.8rem;
+             background-color: #FF0000; /* YouTube Red */
+             color: white !important; /* Override theme link color */
+             text-decoration: none;
+             border-radius: 3px;
+             font-size: 0.9em;
+             font-weight: 600;
+         }
+         .youtube-link-area a:hover {
+             background-color: #cc0000; /* Darker Red */
+         }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    <h2>Recipe Generator</h2>
+    <p>Describe the kind of meal you're looking for (type or use voice!), and let AI generate some ideas!</p>
+
+    {# --- Keep the form with voice input --- #}
+    <form method="POST" action="{{ url_for('generator') }}">
+         <div class="form-group">
+            <label for="description">Describe your desired meal:</label>
+            <textarea id="description" name="description" rows="5" required placeholder="e.g., spicy chicken dinner..."></textarea>
+            <button type="button" id="voiceBtn" title="Start Voice Input">🎤 Voice</button>
+            <span id="voiceStatus"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Recipes</button>
+    </form>
+
+    {# --- Display Error Message if any --- #}
+    {% if error_message %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+
+    {# --- Display Generated Recipes (Replaces old <pre> block) --- #}
+    {# Check if 'recipes' is a list and not empty #}
+    {% if recipes and recipes is iterable and recipes is not string %}
+    <div class="result-box"> {# Keep the existing result box #}
+        <h3>Generated Recipe Ideas:</h3>
+
+        {% for recipe in recipes %} {# Loop through the list of recipe dictionaries #}
+            <div class="recipe-block"> {# Simple div for separation #}
+                <h4>{{ loop.index }}. {{ recipe.name | default('Unnamed Recipe') }}</h4>
+
+                {# Display description if available #}
+                {% if recipe.description %}
+                    <p class="description">{{ recipe.description }}</p>
+                {% endif %}
+
+                        {# --- ADD YouTube Link Section --- #}
+                        {# --- ADD YouTube Link Section --- #}
+                        {% if recipe.youtube_search_url %}
+                            <div class="youtube-link-area">
+                                0.9rem;
+                         margin-top: 0.5rem;
+                         margin-bottom: 1rem;
+                     }
+                    <a href="{{ recipe.youtube_search_url }}" target="_blank" rel="noopener noreferrer">
+                                    ▶️ Find Video on YouTube
+                                </a>/* Styles for YouTube link */
+                    .youtube-link-area {
+                        margin-top
+                            </div>
+                        {% endif %}
+                        {# --- END YouTube Link Section: 10px;
+                        margin-bottom: 10px;
+                    }
+                    . --- #}
+
+                {# Display Key Ingredients #}
+                {% if recipe.ingredients %}
+                    <p><strong>Key Ingredients:</strong></p>
+                    <pre>{{ recipe.ingredients }}</pre>
+                {% endif %}
+
+                {# Display Simple Instructions #}
+                {% if recipe.instructions %}
+                    <p><strong>Simple Instructions:</strong></p>
+                    <pre>{{ recipe.instructions }}</pre>
+                {% endif %}
+
+            </div> {# End recipe-block #}
+        {% else %}
+             {# Message if the loop runs but recipes list is empty #}
+             <p><em>No recipe details could be extracted or displayed. Ensure the AI provided structured data.</em></p>
+        {% endfor %}
+
+    </div> {# End result-box #}
+    {% elif recipes and recipes is string %}
+        {# Fallback if app.py somehow still sent a raw string #}
+         <div class="result-box">
+             <h3>Generated Recipe Ideas (Raw):</h3>
+             <pre>{{ recipes }}</pre>
+         </div>
+    {% endif %}
+    {# --- END Display Section --- #}
+
+{% endblock %}
+
+
+{% block scripts %}
+    {# --- Keep JavaScript for Voice Input --- #}
+    <script>
+        // ... (Voice input JS code - NO CHANGES NEEDED HERE) ...
+         document.addEventListener('DOMContentLoaded', () => {
+            const voiceBtn = document.getElementById('voiceBtn');
+            const descriptionTextarea = document.getElementById('description');
+            const voiceStatus = document.getElementById('voiceStatus');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition;
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+                recognition.onstart = () => { voiceStatus.textContent = 'Listening... Speak now!'; voiceBtn.classList.add('listening'); voiceBtn.disabled = true; voiceBtn.textContent = '🛑 Listening'; };
+                recognition.onspeechend = () => { voiceStatus.textContent = 'Processing speech...'; recognition.stop(); };
+                recognition.onresult = (event) => { const transcript = event.results[0][0].transcript; if (descriptionTextarea.value) { descriptionTextarea.value += ' ' + transcript; } else { descriptionTextarea.value = transcript; } voiceStatus.textContent = 'Speech recognized!'; };
+                recognition.onerror = (event) => { let errorMessage = 'Voice recognition error: '; if (event.error === 'no-speech') { errorMessage += 'No speech detected.'; } else if (event.error === 'audio-capture') { errorMessage += 'Microphone problem.'; } else if (event.error === 'not-allowed') { errorMessage += 'Microphone permission denied.'; } else { errorMessage += event.error; } voiceStatus.textContent = errorMessage; console.error('Speech Recognition Error:', event.error); };
+                recognition.onend = () => { if (!voiceStatus.textContent.includes('Error') && !voiceStatus.textContent.includes('recognized')) { voiceStatus.textContent = ''; } voiceBtn.classList.remove('listening'); voiceBtn.disabled = false; voiceBtn.textContent = '🎤 Voice'; setTimeout(() => { voiceStatus.textContent = ''; }, 4000); };
+                voiceBtn.addEventListener('click', () => { try { recognition.start(); } catch (error) { console.error("Error starting recognition:", error); voiceStatus.textContent = "Could not start listening."; voiceBtn.classList.remove('listening'); voiceBtn.disabled = false; voiceBtn.textContent = '🎤 Voice'; } });
+            } else {
+                voiceBtn.disabled = true; voiceBtn.textContent = '🚫 Voice N/A'; voiceStatus.textContent = 'Voice input not supported in this browser.'; console.warn("Web Speech API (SpeechRecognition) not supported by this browser.");
+            }
+        });
+    </script>
+    {# --- No Carousel JS needed --- #}
+{% endblock %}

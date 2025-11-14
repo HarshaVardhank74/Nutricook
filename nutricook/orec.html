@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipe Recommender - NutriCook{% endblock %}
+
+{% block content %}
+    <h2>Recipe Recommender</h2>
+    <p>Enter your desired nutritional targets and ingredient preferences to get a recipe recommendation.</p>
+
+    <form method="POST" action="{{ url_for('recommender') }}">
+        <div class="form-group">
+            <label for="protein">Desired Protein (g, optional)</label>
+            <input type="number" id="protein" name="protein" step="any" min="0">
+        </div>
+         <div class="form-group">
+            <label for="fat">Desired Fat (g, optional)</label>
+            <input type="number" id="fat" name="fat" step="any" min="0">
+        </div>
+         <div class="form-group">
+            <label for="carbs">Desired Carbs (g, optional)</label>
+            <input type="number" id="carbs" name="carbs" step="any" min="0">
+        </div>
+         <div class="form-group">
+            <label for="fiber">Desired Fiber (g, optional)</label>
+            <input type="number" id="fiber" name="fiber" step="any" min="0">
+        </div>
+        <div class="form-group">
+            <label for="ingredients">Ingredients to Include/Exclude (Optional)</label>
+            <textarea id="ingredients" name="ingredients" rows="3" placeholder="e.g., include chicken, exclude nuts, low-sodium"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Get Recommendation</button>
+    </form>
+
+    {% if recommendation %}
+    <div class="result-box">
+        <h3>Recommendation Result:</h3>
+        {# Use <pre> for preserving formatting from Gemini, or parse/style more nicely #}
+        <pre>{{ recommendation }}</pre>
+    </div>
+    {% endif %}
+
+{% endblock %}
